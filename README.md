@@ -1,1 +1,1 @@
-# STAT679_GROUP7
+# US Crime Data Visualization
