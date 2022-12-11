@@ -25,11 +25,18 @@ Atlanta$year = as.numeric(as.character(Atlanta$year))
 npu<-pull(Atlanta,npu)%>%
   unique()%>%
   na.omit()
+crime<-pull(Atlanta,crime)%>%
+  unique()%>%
+  na.omit()
 pal <- colorFactor(c("blue","yellow","red"), domain = Atlanta$crime)
 crime_plot<-function(dt){
   sub<-dt%>%filter(selected)
   leaflet(sub) %>%
     addProviderTiles(providers$CartoDB.Positron,group = "OSM") %>%
+    setView(
+      lng = -84.411900,
+      lat = 33.773567,
+      zoom=10)%>%
     addCircleMarkers(
       lng = sub$long,
       lat = sub$lat,
@@ -37,7 +44,8 @@ crime_plot<-function(dt){
       stroke = FALSE,
       fillOpacity = 1,
       popup = sub$crime,
-      fillColor = ~pal(sub$crime))
+      fillColor = ~pal(sub$crime)
+      )
 }
 
 count_plot<-function(df){
@@ -53,7 +61,8 @@ count_plot<-function(df){
     xlab("Year") + ylab("Total Amount of Crimes")
 }
 
-
+#crimeLA$Victim.Descent = replace(crimeLA$Victim.Descent, c("O","","X","K","A","C","F","P","I","U","L"), "Other")
+#crimeLA$Victim.Descent[crimeLA$Victim.Descent == c("O","","X","K","A","C","F","P","I","U","L")] <- "Other"
 
 ui <- 
   navbarPage("Past Crime of Neighborhoods",
@@ -83,9 +92,9 @@ ui <-
                       tags$h1("Mapping Atlanta crime incidences from 2010 to 2016"),
                       sidebarLayout(
                         sidebarPanel(
-                          selectInput("NPU","Select a NPU",npu,multiple = T),
+                          selectInput("NPU","Select a Neighborhood Planning Unit(NPU)",npu,multiple = T),
                           uiOutput("selection1"),
-                          uiOutput("selection2")
+                          selectInput("crime_type","Select a crime type",crime,multiple = T)
                         ),
                         mainPanel(
                           leafletOutput("plot1"),
@@ -110,10 +119,7 @@ server <- function(input, output) {
     selectInput("neighborhood", "Select a neighborhood", 
                 choices = Atlanta[Atlanta$npu==input$NPU,"neighborhood"],multiple = T)
   })
-  output$selection2 <- renderUI({
-    selectInput("crime_type", "Select a crime type", 
-                choices = Atlanta[Atlanta$npu==input$NPU & Atlanta$neighborhood==input$neighborhood,"crime"],multiple=T)
-  })
+  
   crime_subset_Atl<-reactive({
     Atlanta%>%mutate(selected= (npu%in%input$NPU)&
                        (neighborhood%in%input$neighborhood)&
@@ -160,7 +166,8 @@ server <- function(input, output) {
       ggplot()+
       geom_line(aes(year,n,col=Area.Name))+
       scale_x_continuous(limits =c(2010,2017),expand=c(0,0))+
-      xlab("Year") + ylab("Total Number of Crimes")
+      xlab("Year") + ylab("Total Number of Crimes")+
+      theme(legend.position='none')
   })
   
 }
