@@ -53,8 +53,7 @@ count_plot<-function(df){
     xlab("Year") + ylab("Total Amount of Crimes")
 }
 
-#crimeLA$Victim.Descent = replace(crimeLA$Victim.Descent, c("O","","X","K","A","C","F","P","I","U","L"), "Other")
-#crimeLA$Victim.Descent[crimeLA$Victim.Descent == c("O","","X","K","A","C","F","P","I","U","L")] <- "Other"
+
 
 ui <- 
   navbarPage("Past Crime of Neighborhoods",
@@ -161,8 +160,7 @@ server <- function(input, output) {
       ggplot()+
       geom_line(aes(year,n,col=Area.Name))+
       scale_x_continuous(limits =c(2010,2017),expand=c(0,0))+
-      xlab("Year") + ylab("Total Number of Crimes")+
-      theme(legend.position='none')
+      xlab("Year") + ylab("Total Number of Crimes")
   })
   
 }
