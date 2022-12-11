@@ -76,7 +76,8 @@ ui <-
                                              sliderInput("age", "Victim Age", min = min(crimeLA$Victim.Age), max =max(crimeLA$Victim.Age), c(10,98),sep=""),
                                              
                                              
-                                             plotlyOutput("line",width=350,height=300)))),
+                                             plotlyOutput("bar",width=350,height=300),
+                                             plotOutput("line",width=350,height=300)))),
              
              tabPanel("Atlanta Crime",
                       theme = bs_theme(bootswatch = "simplex"),
@@ -142,7 +143,7 @@ server <- function(input, output) {
         clusterOptions = markerClusterOptions())
   })
   
-  output$line <- renderPlotly({
+  output$bar <- renderPlotly({
     ggplotly(crime_subset()%>%
                group_by(year,Area.Name) %>%
                count() %>%
@@ -151,6 +152,17 @@ server <- function(input, output) {
                xlab("Year") + ylab("Total Amount of Crimes") +
                theme(legend.position='none'))%>%
       config(displayModeBar=F)
+  })
+  
+  output$line <- renderPlot ({
+    crime_subset() %>%
+      group_by(year,Area.Name)%>%
+      count() %>%
+      ggplot()+
+      geom_line(aes(year,n,col=Area.Name))+
+      scale_x_continuous(limits =c(2010,2017),expand=c(0,0))+
+      xlab("Year") + ylab("Total Number of Crimes")+
+      theme(legend.position='none')
   })
   
 }
