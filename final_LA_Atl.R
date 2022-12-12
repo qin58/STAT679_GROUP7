@@ -45,7 +45,10 @@ crime_plot<-function(dt){
       fillOpacity = 1,
       popup = sub$crime,
       fillColor = ~pal(sub$crime)
-      )
+      )%>%
+    addLegend( pal = pal, 
+              values = sub$crime,
+               opacity = 1)
 }
 
 count_plot<-function(df){
