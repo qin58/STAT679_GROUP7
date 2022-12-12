@@ -166,8 +166,7 @@ server <- function(input, output) {
       ggplot()+
       geom_line(aes(year,n,col=Area.Name))+
       scale_x_continuous(limits =c(2010,2017),expand=c(0,0))+
-      xlab("Year") + ylab("Total Number of Crimes")+
-      theme(legend.position='none')
+      xlab("Year") + ylab("Total Number of Crimes")
   })
   
 }
