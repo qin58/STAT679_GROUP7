@@ -45,7 +45,10 @@ crime_plot<-function(dt){
       fillOpacity = 1,
       popup = sub$crime,
       fillColor = ~pal(sub$crime)
-      )
+      )%>%
+    addLegend( pal = pal, 
+              values = sub$crime,
+               opacity = 1)
 }
 
 count_plot<-function(df){
@@ -89,7 +92,7 @@ ui <-
              
              tabPanel("Atlanta Crime",
                       theme = bs_theme(bootswatch = "simplex"),
-                      tags$h1("Mapping Atlanta crime incidences from 2010 to 2016"),
+                      tags$h1("Mapping Atlanta crime incidences from 2009 to 2016"),
                       sidebarLayout(
                         sidebarPanel(
                           selectInput("NPU","Select a Neighborhood Planning Unit(NPU)",npu,multiple = T),
